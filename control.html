@@ -1,104 +1,871 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة التحكم — استبيان آراء الموظفين</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - نظام الاستبيانات</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success-color: #16a34a;
+            --whatsapp-color: #25d366;
+            --danger-color: #dc2626;
+            --danger-hover: #b91c1c;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Navigation */
+        .sidebar {
+            width: 260px;
+            background-color: #0f172a;
+            color: #ffffff;
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar h2 {
+            font-size: 1.25rem;
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .sidebar-menu li a {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .sidebar-menu li a:hover, .sidebar-menu li.active a {
+            background-color: #1e293b;
+            color: #ffffff;
+        }
+
+        .sidebar-menu li a svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-header h1 {
+            font-size: 1.75rem;
+            color: #0f172a;
+        }
+
+        /* Cards and Layouts */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card h3 {
+            margin-bottom: 1rem;
+            color: #0f172a;
+            font-size: 1.1rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Forms styling */
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: var(--danger-hover);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-whatsapp {
+            background-color: var(--whatsapp-color);
+            color: white;
+        }
+
+        /* Dynamic options for MCQ */
+        .options-container {
+            margin-top: 0.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .option-item {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Tables & Lists */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 1rem;
+            text-align: right;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .data-table th {
+            background-color: #f1f5f9;
+            color: var(--text-color);
+            font-weight: 600;
+        }
+
+        .actions-cell {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .icon-btn:hover {
+            background-color: #f1f5f9;
+        }
+
+        .icon-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Categories Section inside Answers view */
+        .category-block {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .category-title {
+            font-size: 1.2rem;
+            color: #1e3a8a;
+            margin-bottom: 1rem;
+            padding-bottom: 0.25rem;
+            border-bottom: 2px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .category-title.unclassified {
+            color: #7c2d12;
+            border-bottom-color: #f97316;
+        }
+
+        .answer-item {
+            padding: 0.75rem 0;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .answer-item:last-child {
+            border-bottom: none;
+        }
+
+        .answer-q {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .answer-a {
+            color: var(--primary-color);
+            font-size: 0.95rem;
+        }
+
+        /* Modal Settings */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+    </style>
 </head>
-<body dir="rtl">
+<body>
 
-<header>
-  <div class="header-brand">
-    <img src="logo.svg" alt="شعار الاستبيان">
-    <h1>لوحة التحكم</h1>
-  </div>
-  <button class="icon-btn" id="openSettings">⚙️ الإعدادات</button>
-</header>
-
-<main>
-  <div class="glass-card">
-    <h2>إضافة موظفة</h2>
-    <div class="form-grid">
-      <input id="newName" placeholder="اسم الموظفة">
-      <select id="newBranch">
-        <option value="" disabled selected>اختاري الفرع</option>
-      </select>
-      <input id="newTitle" placeholder="المسمى الوظيفي">
-      <button class="btn" id="addEmpBtn">إضافة</button>
-    </div>
-  </div>
-
-  <div class="glass-card">
-    <h2>الموظفات حسب الفرع</h2>
-    <div id="branchesWrap"><div class="empty-hint">لا يوجد موظفات بعد.</div></div>
-  </div>
-</main>
-
-<div class="overlay" id="empOverlay">
-  <div class="panel">
-    <div class="panel-head">
-      <div>
-        <div class="panel-title" id="pName">—</div>
-        <div class="panel-sub" id="pMeta">—</div>
-      </div>
-      <button class="close-x" id="closePanel">✕</button>
+    <div class="sidebar">
+        <h2>
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="white"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
+            لوحة تحكم الاستبيانات
+        </h2>
+        <ul class="sidebar-menu">
+            <li class="active" onclick="switchSection('employees-section')">
+                <a>
+                    <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    إدارة الموظفات
+                </a>
+            </li>
+            <li onclick="switchSection('questions-section')">
+                <a>
+                    <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                    إدارة الأسئلة
+                </a>
+            </li>
+            <li onclick="switchSection('answers-section')">
+                <a>
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"/></svg>
+                    إجابات الموظفات
+                </a>
+            </li>
+        </ul>
     </div>
 
-    <div class="link-box">
-      <input id="linkInput" readonly>
-      <button class="btn small ghost" id="copyLinkBtn">نسخ الرابط</button>
+    <div class="main-content">
+
+        <div id="employees-section" class="page-section active">
+            <div class="section-header">
+                <h1>إدارة الموظفات وطباعة الروابط</h1>
+            </div>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>إضافة موظفة جديدة</h3>
+                    <form id="employee-form" onsubmit="addEmployee(event)">
+                        <div class="form-group">
+                            <label>اسم الموظفة</label>
+                            <input type="text" id="emp-name" class="form-control" required placeholder="مثال: سارة أحمد">
+                        </div>
+                        <div class="form-group">
+                            <label>المسمى الوظيفي</label>
+                            <input type="text" id="emp-role" class="form-control" required placeholder="مثال: خدمة عملاء">
+                        </div>
+                        <div class="form-group">
+                            <label>الفرع</label>
+                            <input type="text" id="emp-branch" class="form-control" required placeholder="مثال: فرع الرياض">
+                        </div>
+                        <div class="form-group">
+                            <label>رقم الجوال</label>
+                            <input type="tel" id="emp-phone" class="form-control" required placeholder="مثال: 9665xxxxxxxx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">حفظ البيانات</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>قائمة الموظفات المسجلات</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>المسمى الوظيفي</th>
+                            <th>الفرع</th>
+                            <th>رقم الجوال</th>
+                            <th>رابط الاستبيان / إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employees-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="questions-section" class="page-section">
+            <div class="section-header">
+                <h1>إدارة أسئلة الاستبيان</h1>
+            </div>
+            <div class="grid-container">
+                <div class="card">
+                    <h3>إضافة سؤال جديد</h3>
+                    <form id="question-form" onsubmit="addQuestion(event)">
+                        <div class="form-group">
+                            <label>نص السؤال</label>
+                            <input type="text" id="q-text" class="form-control" required placeholder="اكتب السؤال هنا...">
+                        </div>
+                        <div class="form-group">
+                            <label>التصنيف (اتركه فارغاً لجعل السؤال غير مصنف)</label>
+                            <input type="text" id="q-category" class="form-control" placeholder="مثال: بيئة العمل، الإدارة">
+                        </div>
+                        <div class="form-group">
+                            <label>نوع السؤال</label>
+                            <select id="q-type" class="form-control" onchange="toggleOptionsField()">
+                                <option value="text">إجابة نصية</option>
+                                <option value="mcq">اختيار من متعدد</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="mcq-options-group" style="display: none;">
+                            <label>الخيارات المتاحة</label>
+                            <div class="options-container" id="options-container">
+                                <div class="option-item">
+                                    <input type="text" class="form-control mcq-option-input" placeholder="الخيار 1">
+                                </div>
+                                <div class="option-item">
+                                    <input type="text" class="form-control mcq-option-input" placeholder="الخيار 2">
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary" style="margin-top: 0.5rem; padding: 0.4rem 0.8rem; font-size: 0.85rem;" onclick="addOptionInput()">إضافة خيار آخر</button>
+                        </div>
+                        <button type="submit" class="btn btn-primary">إضافة السؤال</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>الأسئلة الحالية</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>السؤال</th>
+                            <th>التصنيف</th>
+                            <th>النوع</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="questions-list"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="answers-section" class="page-section">
+            <div class="section-header">
+                <h1>استعراض إجابات الموظفات</h1>
+            </div>
+            <div class="form-group" style="max-width: 400px;">
+                <label>اختر الموظفة لعرض نتائجها:</label>
+                <select id="select-emp-answers" class="form-control" onchange="loadEmployeeAnswers()">
+                    <option value="">-- اختر الموظفة --</option>
+                </select>
+            </div>
+
+            <div id="employee-results-container" style="display: none; margin-top: 2rem;">
+                <div class="card" style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h2 id="view-profile-name" style="color: var(--primary-color);"></h2>
+                        <p id="view-profile-details" style="color: var(--text-light); margin-top: 0.25rem;"></p>
+                    </div>
+                    <button class="btn btn-primary" onclick="openSettingsModal()">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="white"><path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65zM12 15.5c-1.93 0-3-1.07-3-3.5s1.07-3.5 3-3.5 3 1.07 3 3.5-1.07 3.5-3 3.5z"/></svg>
+                        الإعدادات
+                    </button>
+                </div>
+
+                <div id="categories-answers-output"></div>
+            </div>
+        </div>
+
     </div>
-    <div id="copiedMsg" class="link-copied" style="display:none;margin-top:-12px;margin-bottom:14px;">تم نسخ الرابط ✓</div>
 
-    <div id="answersWrap"></div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="settingsOverlay">
-  <div class="modal">
-    <h2>الإعدادات</h2>
-
-    <div class="settings-tabs">
-      <button class="settings-tab-btn active" data-tab="tags">الأوسمة</button>
-      <button class="settings-tab-btn" data-tab="questions">الأسئلة</button>
-      <button class="settings-tab-btn" data-tab="branches">الفروع</button>
+    <div class="modal" id="settings-modal">
+        <div class="modal-content">
+            <h3 style="margin-bottom: 1rem;">تعديل إعدادات الموظفة</h3>
+            <input type="hidden" id="edit-emp-id">
+            <div class="form-group">
+                <label>اسم الموظفة</label>
+                <input type="text" id="edit-emp-name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>المسمى الوظيفي</label>
+                <input type="text" id="edit-emp-role" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>الفرع</label>
+                <input type="text" id="edit-emp-branch" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>رقم الجوال</label>
+                <input type="tel" id="edit-emp-phone" class="form-control">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-danger" onclick="deleteEmployeeAction()" style="margin-left: auto;">حذف الموظفة نهائياً</button>
+                <button class="btn btn-primary" onclick="saveEmployeeSettings()">حفظ التعديلات</button>
+                <button class="btn" style="background-color: #cbd5e1;" onclick="closeSettingsModal()">إلغاء</button>
+            </div>
+        </div>
     </div>
 
-    <!-- تبويب: الأوسمة -->
-    <div class="settings-pane active" id="pane-tags">
-      <div id="tagList"></div>
-      <div style="margin-top:14px;">
-        <input id="newTagName" placeholder="اسم الوسم الجديد" style="margin-bottom:10px;">
-        <div class="swatch-picker" id="swatchPicker"></div>
-        <button class="btn" id="addTagBtn" style="width:100%;">إضافة وسم</button>
-      </div>
-    </div>
+    <script>
+        // التهيئة المبدئية للبيانات في الذاكرة المحلية عند أول تشغيل لغرض التجربة الكاملة
+        if (!localStorage.getItem('employees')) {
+            localStorage.setItem('employees', JSON.stringify([
+                { id: "emp_1", name: "سارة العتيبي", role: "مشرفة صالة", branch: "الرياض غاليري", phone: "966500000001" },
+                { id: "emp_2", name: "نورة القحطاني", role: "موظفة استقبال", branch: "الرياض غاليري", phone: "966500000002" }
+            ]));
+        }
+        if (!localStorage.getItem('questions')) {
+            localStorage.setItem('questions', JSON.stringify([
+                { id: "q_1", text: "ما هو تقييمك لتعاون فريق العمل معك؟", category: "بيئة العمل", type: "mcq", options: ["ممتاز", "جيد جداً", "بحاجة لتحسين"] },
+                { id: "q_2", text: "هل تواجهين أي معوقات تقنية أثناء أداء عملك؟", category: "الدعم الفني", type: "text" },
+                { id: "q_3", text: "اكتبي ملاحظات عامة ترغبين في إيصالها للإدارة مباشرة وبسرية تامّة.", category: "", type: "text" } // سؤال غير مصنف
+            ]));
+        }
+        if (!localStorage.getItem('answers')) {
+            localStorage.setItem('answers', JSON.stringify({
+                "emp_1": {
+                    "q_1": "ممتاز",
+                    "q_2": "لا توجد معوقات والحمد لله",
+                    "q_3": "أتمنى زيادة الحوافز والمكافآت المرتبطة بالأداء الكلي"
+                }
+            }));
+        }
 
-    <!-- تبويب: الأسئلة -->
-    <div class="settings-pane" id="pane-questions">
-      <div id="questionList"></div>
-      <div class="add-row">
-        <input id="newQuestionText" placeholder="نص السؤال الجديد">
-        <button class="btn small" id="addQuestionBtn">إضافة</button>
-      </div>
-    </div>
+        // التبديل بين أقسام لوحة التحكم
+        function switchSection(sectionId) {
+            document.querySelectorAll('.page-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.sidebar-menu li').forEach(li => li.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            
+            // تحديد الزر النشط في القائمة الجانبية
+            const idx = sectionId === 'employees-section' ? 0 : (sectionId === 'questions-section' ? 1 : 2);
+            document.querySelectorAll('.sidebar-menu li')[idx].classList.add('active');
 
-    <!-- تبويب: الفروع -->
-    <div class="settings-pane" id="pane-branches">
-      <div id="branchList"></div>
-      <div class="add-row">
-        <input id="newBranchName" placeholder="اسم الفرع الجديد">
-        <button class="btn small" id="addBranchBtn">إضافة</button>
-      </div>
-    </div>
+            if(sectionId === 'employees-section') renderEmployees();
+            if(sectionId === 'questions-section') renderQuestions();
+            if(sectionId === 'answers-section') populateEmployeesDropdown();
+        }
 
-    <div style="text-align:left;margin-top:16px;">
-      <button class="btn ghost small" id="closeSettings">إغلاق</button>
-    </div>
-  </div>
-</div>
+        // إظهار/إخفاء حقل الخيارات بناء على نوع السؤال
+        function toggleOptionsField() {
+            const type = document.getElementById('q-type').value;
+            const group = document.getElementById('mcq-options-group');
+            group.style.display = type === 'mcq' ? 'block' : 'none';
+        }
 
-<script type="module" src="control.js"></script>
+        // إضافة حقل خيار جديد لأسئلة الاختيار من متعدد
+        function addOptionInput() {
+            const container = document.getElementById('options-container');
+            const count = container.querySelectorAll('.option-item').length + 1;
+            const div = document.createElement('div');
+            div.className = 'option-item';
+            div.innerHTML = `<input type="text" class="form-control mcq-option-input" placeholder="الخيار ${count}">`;
+            container.appendChild(div);
+        }
+
+        // إضافة موظفة جديدة
+        function addEmployee(e) {
+            e.preventDefault();
+            const name = document.getElementById('emp-name').value.trim();
+            const role = document.getElementById('emp-role').value.trim();
+            const branch = document.getElementById('emp-branch').value.trim();
+            const phone = document.getElementById('emp-phone').value.trim();
+            
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const newEmp = {
+                id: 'emp_' + Date.now(),
+                name, role, branch, phone
+            };
+            
+            employees.push(newEmp);
+            localStorage.setItem('employees', JSON.stringify(employees));
+            document.getElementById('employee-form').reset();
+            renderEmployees();
+        }
+
+        // استعراض وطباعة قائمة الموظفات
+        function renderEmployees() {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const tbody = document.getElementById('employees-list');
+            tbody.innerHTML = '';
+
+            employees.forEach(emp => {
+                // توليد الرابط الخاص بالاستبيان للموظفة بشكل ديناميكي
+                const currentUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+                const surveyLink = `${currentUrl}/survey.html?empId=${emp.id}`;
+                const encodedMsg = encodeURIComponent(`مرحباً أستاذة ${emp.name}، فضلاً تكرماً بملء هذا الاستبيان الخاص بالعمل: ${surveyLink}`);
+                const whatsappUrl = `https://wa.me/${emp.phone}?text=${encodedMsg}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${emp.name}</td>
+                    <td>${emp.role}</td>
+                    <td>${emp.branch}</td>
+                    <td>${emp.phone}</td>
+                    <td class="actions-cell">
+                        <input type="text" class="form-control" value="${surveyLink}" readonly style="width: 200px; font-size:0.8rem; padding:0.4rem;">
+                        <a href="${whatsappUrl}" target="_blank" class="btn btn-whatsapp" style="padding:0.4rem 0.8rem; font-size:0.8rem;">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="white"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.623-1.023-5.086-2.885-6.948C16.366 2.016 13.91 1.01 11.282 1.01c-5.44 0-9.866 4.372-9.87 9.802 0 1.953.53 3.447 1.411 4.969l-.991 3.616 3.725-.943zm12.164-5.263c-.301-.15-1.784-.879-2.057-.978-.275-.1-.475-.149-.674.15-.198.299-.769.978-.943 1.177-.173.199-.347.225-.648.075-.302-.15-1.273-.469-2.426-1.494-.897-.8-1.502-1.789-1.678-2.089-.176-.3-.019-.462.131-.611.135-.134.302-.349.452-.524.149-.174.199-.299.299-.498.1-.2.05-.374-.025-.524-.075-.15-.674-1.622-.924-2.22-.243-.585-.491-.507-.674-.516-.174-.008-.373-.01-.573-.01-.2 0-.523.074-.797.373-.273.3-.1.697-.1.697s-.1.199-.1.398c0 1.346.996 2.641 1.133 2.825.137.184 1.959 2.992 4.747 4.194.664.286 1.183.457 1.587.585.667.212 1.275.182 1.756.11.536-.081 1.784-.73 2.033-1.434.248-.704.248-1.306.173-1.433-.074-.127-.273-.201-.574-.352z"/></svg>
+                            مشاركة
+                        </a>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // إضافة سؤال جديد
+        function addQuestion(e) {
+            e.preventDefault();
+            const text = document.getElementById('q-text').value.trim();
+            let category = document.getElementById('q-category').value.trim();
+            const type = document.getElementById('q-type').value;
+            
+            if(!category) {
+                category = "غير مصنفة"; // وسم افتراضي للأسئلة بدون تصنيف لفرزها لاحقاً
+            }
+
+            let options = [];
+            if(type === 'mcq') {
+                document.querySelectorAll('.mcq-option-input').forEach(input => {
+                    if(input.value.trim() !== '') options.push(input.value.trim());
+                });
+            }
+
+            const questions = JSON.parse(localStorage.getItem('questions')) || [];
+            questions.push({
+                id: 'q_' + Date.now(),
+                text, category, type, options
+            });
+
+            localStorage.setItem('questions', JSON.stringify(questions));
+            document.getElementById('question-form').reset();
+            document.getElementById('options-container').innerHTML = `
+                <div class="option-item"><input type="text" class="form-control mcq-option-input" placeholder="الخيار 1"></div>
+                <div class="option-item"><input type="text" class="form-control mcq-option-input" placeholder="الخيار 2"></div>
+            `;
+            toggleOptionsField();
+            renderQuestions();
+        }
+
+        // عرض قائمة الأسئلة المتوفرة في لوحة التحكم مع إمكانية حذفها
+        function renderQuestions() {
+            const questions = JSON.parse(localStorage.getItem('questions')) || [];
+            const tbody = document.getElementById('questions-list');
+            tbody.innerHTML = '';
+
+            questions.forEach(q => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${q.text}</td>
+                    <td><span style="background:#e0f2fe; color:#0369a1; padding:0.25rem 0.5rem; border-radius:0.25rem; font-size:0.85rem;">${q.category || 'غير مصنفة'}</span></td>
+                    <td>${q.type === 'mcq' ? 'اختيار من متعدد' : 'إجابة نصية'}</td>
+                    <td>
+                        <button class="icon-btn" onclick="deleteQuestion('${q.id}')" style="color:var(--danger-color)">
+                            <svg viewBox="0 0 24 24"><path fill="currentColor" d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // حذف سؤال معيّن
+        function deleteQuestion(id) {
+            let questions = JSON.parse(localStorage.getItem('questions')) || [];
+            questions = questions.filter(q => q.id !== id);
+            localStorage.setItem('questions', JSON.stringify(questions));
+            renderQuestions();
+        }
+
+        // تهيئة القائمة المنسدلة في صفحة استعراض الإجابات
+        function populateEmployeesDropdown() {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const select = document.getElementById('select-emp-answers');
+            select.innerHTML = '<option value="">-- اختر الموظفة --</option>';
+            
+            employees.forEach(emp => {
+                const opt = document.createElement('option');
+                opt.value = emp.id;
+                opt.textContent = `${emp.name} (${emp.branch})`;
+                select.appendChild(opt);
+            });
+            document.getElementById('employee-results-container').style.display = 'none';
+        }
+
+        // جافا سكريبت جلب وعرض الإجابات مقسمة حسب التصنيف وتحتوي على فرز "غير مصنفة"
+        function loadEmployeeAnswers() {
+            const empId = document.getElementById('select-emp-answers').value;
+            if(!empId) {
+                document.getElementById('employee-results-container').style.display = 'none';
+                return;
+            }
+
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const questions = JSON.parse(localStorage.getItem('questions')) || [];
+            const allAnswers = JSON.parse(localStorage.getItem('answers')) || {};
+
+            const emp = employees.find(e => e.id === empId);
+            if(!emp) return;
+
+            // تحديث واجهة الملف الشخصي للموظفة المحددة
+            document.getElementById('view-profile-name').textContent = emp.name;
+            document.getElementById('view-profile-details').textContent = `${emp.role} | ${emp.branch} | جوال: ${emp.phone}`;
+            document.getElementById('edit-emp-id').value = emp.id;
+
+            const empAnswers = allAnswers[empId] || {};
+            const container = document.getElementById('categories-answers-output');
+            container.innerHTML = '';
+
+            // تصنيف وتجميع الأسئلة وإجاباتها
+            const grouped = {};
+            questions.forEach(q => {
+                // الفرز بناءً على الشرط: إذا كان الحقل فارغاً، أو يحمل القيمة الافتراضية "غير مصنفة"
+                let cat = q.category ? q.category.trim() : "غير مصنفة";
+                if(cat === "") cat = "غير مصنفة";
+
+                if(!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push({
+                    question: q.text,
+                    answer: empAnswers[q.id] || '<span style="color:#94a3b8; font-style:italic;">لم تجب بعد</span>'
+                });
+            });
+
+            // توليد الـ HTML في الصفحة بفرز الأقسام
+            // وضع قسم "غير مصنفة" في نهاية القائمة دائماً للترتيب البصري
+            const categories = Object.keys(grouped).sort((a, b) => {
+                if (a === "غير مصنفة") return 1;
+                if (b === "غير مصنفة") return -1;
+                return a.localeCompare(b);
+            });
+
+            categories.forEach(cat => {
+                const block = document.createElement('div');
+                block.className = 'category-block';
+                
+                const isUnclassified = cat === "غير مصنفة";
+                block.innerHTML = `
+                    <div class="category-title ${isUnclassified ? 'unclassified' : ''}">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10H7v-2h10v2z"/></svg>
+                        القسم: ${cat}
+                    </div>
+                `;
+
+                grouped[cat].forEach(item => {
+                    const ansItem = document.createElement('div');
+                    ansItem.className = 'answer-item';
+                    ansItem.innerHTML = `
+                        <div class="answer-q">${item.question}</div>
+                        <div class="answer-a">${item.answer}</div>
+                    `;
+                    block.appendChild(ansItem);
+                });
+
+                container.appendChild(block);
+            });
+
+            document.getElementById('employee-results-container').style.display = 'block';
+        }
+
+        // فتح نافذة الإعدادات الفرعية (تعديل وحذف) للموظفة الحالية
+        function openSettingsModal() {
+            const empId = document.getElementById('edit-emp-id').value;
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const emp = employees.find(e => e.id === empId);
+            
+            if(emp) {
+                document.getElementById('edit-emp-name').value = emp.name;
+                document.getElementById('edit-emp-role').value = emp.role;
+                document.getElementById('edit-emp-branch').value = emp.branch;
+                document.getElementById('edit-emp-phone').value = emp.phone;
+                document.getElementById('settings-modal').classList.add('active');
+            }
+        }
+
+        // إغلاق نافذة الإعدادات
+        function closeSettingsModal() {
+            document.getElementById('settings-modal').classList.remove('active');
+        }
+
+        // حفظ التعديلات لبيانات الموظفة (الاسم، المسمى، الفرع، الجوال)
+        function saveEmployeeSettings() {
+            const empId = document.getElementById('edit-emp-id').value;
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const index = employees.findIndex(e => e.id === empId);
+
+            if(index !== -1) {
+                employees[index].name = document.getElementById('edit-emp-name').value.trim();
+                employees[index].role = document.getElementById('edit-emp-role').value.trim();
+                employees[index].branch = document.getElementById('edit-emp-branch').value.trim();
+                employees[index].phone = document.getElementById('edit-emp-phone').value.trim();
+
+                localStorage.setItem('employees', JSON.stringify(employees));
+                closeSettingsModal();
+                
+                // إعادة تحديث القائمة المنسدلة وتثبيت الاختيار الحالي لعكس التعديلات فورياً
+                populateEmployeesDropdown();
+                document.getElementById('select-emp-answers').value = empId;
+                loadEmployeeAnswers();
+            }
+        }
+
+        // حذف الموظفة وإجاباتها بالكامل وإعادة التوجيه للرئيسية
+        function deleteEmployeeAction() {
+            if(confirm("هل أنتِ متأكدة من حذف هذه الموظفة وجميع سجلات إجاباتها نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")) {
+                const empId = document.getElementById('edit-emp-id').value;
+                
+                // 1. حذفها من مصفوفة الموظفات
+                let employees = JSON.parse(localStorage.getItem('employees')) || [];
+                employees = employees.filter(e => e.id !== empId);
+                localStorage.setItem('employees', JSON.stringify(employees));
+
+                // 2. حذف سجل الإجابات الخاص بها للحفاظ على نظافة قاعدة البيانات المحلية
+                const allAnswers = JSON.parse(localStorage.getItem('answers')) || {};
+                if(allAnswers[empId]) {
+                    delete allAnswers[empId];
+                    localStorage.setItem('answers', JSON.stringify(allAnswers));
+                }
+
+                closeSettingsModal();
+                // إعادة توجيه المستخدم وتحديث الواجهة للقسم الرئيسي
+                switchSection('employees-section');
+            }
+        }
+
+        // تحميل البيانات الافتراضية عند الفتح لأول مرة
+        window.onload = function() {
+            renderEmployees();
+        };
+    </script>
 </body>
 </html>
