@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استبيان الموظفة الرسمي</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg-color: #f1f5f9;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --text-light: #64748b;
+            --border-color: #cbd5e1;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .survey-container {
+            width: 100%;
+            max-width: 650px;
+            background-color: var(--card-bg);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05), 0 4px 6px -4px rgba(0,0,0,0.05);
+            padding: 2.5rem 2rem;
+        }
+
+        /* تم إزالة أي وسم أو حاوية خاصة بالشعار نهائياً */
+        
+        .survey-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1.5rem;
+        }
+
+        .survey-header h1 {
+            font-size: 1.6rem;
+            color: #0f172a;
+            margin-bottom: 0.5rem;
+        }
+
+        /* عبارة بداية الاستبيان المضافة */
+        .survey-intro {
+            background-color: #eff6ff;
+            border-right: 4px solid var(--primary-color);
+            padding: 1rem;
+            border-radius: 0.375rem;
+            color: #1e40af;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            text-align: right;
+        }
+
+        .survey-intro svg {
+            width: 18px;
+            height: 18px;
+            vertical-align: middle;
+            margin-left: 0.25rem;
+            fill: currentColor;
+        }
+
+        .employee-badge {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-color);
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .employee-badge strong {
+            color: var(--text-color);
+        }
+
+        .question-card {
+            margin-bottom: 2rem;
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #0f172a;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background-color: #f8fafc;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+        }
+
+        /* تنسيق الاختيار من متعدد للمظهر العصري */
+        .mcq-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+            margin-top: 0.5rem;
+        }
+
+        .mcq-option-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            background-color: #f8fafc;
+            font-weight: 500;
+        }
+
+        .mcq-option-label:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .mcq-option-label input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary-color);
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* شاشة انتهاء الاستبيان */
+        .success-screen {
+            display: none;
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+
+        .success-screen svg {
+            width: 64px;
+            height: 64px;
+            fill: #16a34a;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-screen h2 {
+            font-size: 1.5rem;
+            color: #0f172a;
+            margin-bottom: 1rem;
+        }
+
+        .success-screen p {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="survey-container">
+        
+        <div id="survey-form-wrapper">
+            <div class="survey-header">
+                <h1>استبيان قياس الرضا والبيئة الداخلية</h1>
+            </div>
+
+            <div class="survey-intro">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-4h-2V7h2v6z"/></svg>
+                مرحباً بكِ.. نهدف من خلال هذا الاستبيان إلى تحسين بيئة العمل وتطويرها لتكون مكاناً أفضل للجميع.
+            </div>
+
+            <div class="employee-badge" id="emp-badge-info">
+                جاري تحميل بيانات الموظفة...
+            </div>
+
+            <form id="actual-survey-form" onsubmit="submitSurvey(event)">
+                <div id="dynamic-questions-container"></div>
+                <button type="submit" class="btn-submit">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    إرسال الإجابات الآن
+                </button>
+            </form>
+        </div>
+
+        <div class="success-screen" id="success-screen">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            <h2>تم إرسال إجاباتكِ بنجاح</h2>
+            <p>شكراً لوقتك ومشاركتك! سيكون هناك المزيد من الاستبيانات مستقبلاً، حيث نسعى دائماً للاستماع إليك واكتساب رضاك.</p>
+        </div>
+
+    </div>
+
+    <script>
+        // دالة التقاط المعاملات من الرابط (URL parameters)
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        const currentEmpId = getQueryParam('empId');
+
+        // تحميل بيانات الاستبيان بالاعتماد على الموظفة والأسئلة المخزنة
+        function initSurveyPage() {
+            const employees = JSON.parse(localStorage.getItem('employees')) || [];
+            const questions = JSON.parse(localStorage.getItem('questions')) || [];
+            
+            // البحث عن الموظفة صاحبة الرابط
+            const emp = employees.find(e => e.id === currentEmpId);
+            
+            if(!emp) {
+                document.getElementById('survey-form-wrapper').innerHTML = `
+                    <div style="text-align:center; color:red; padding: 2rem 0;">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="red" style="margin-bottom:1rem;"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        <h3>عذراً، الرابط المستخدم غير صحيح أو منتهي الصلاحية!</h3>
+                    </div>
+                `;
+                return;
+            }
+
+            // طباعة بيانات ترحيب الموظفة بالهيدر
+            document.getElementById('emp-badge-info').innerHTML = `الموظفة المستهدفة: <strong>${emp.name}</strong> | المسمى الوظيفي: <strong>${emp.role}</strong> | الفرع: <strong>${emp.branch}</strong>`;
+
+            // بناء الأسئلة ديناميكياً مع دعم نوع اختيار من متعدد
+            const container = document.getElementById('dynamic-questions-container');
+            container.innerHTML = '';
+
+            questions.forEach((q, index) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                
+                const qTextDiv = document.createElement('div');
+                qTextDiv.className = 'question-text';
+                qTextDiv.textContent = `${index + 1}. ${q.text}`;
+                card.appendChild(qTextDiv);
+
+                // فحص نوع السؤال وبناء عناصر الواجهة الموافقة له
+                if(q.type === 'mcq') {
+                    // توليد خيارات من متعدد (Radio buttons)
+                    const optionsListDiv = document.createElement('div');
+                    optionsListDiv.className = 'mcq-options-list';
+                    
+                    if(q.options && q.options.length > 0) {
+                        q.options.forEach(opt => {
+                            const label = document.createElement('label');
+                            label.className = 'mcq-option-label';
+                            label.innerHTML = `
+                                <input type="radio" name="question_${q.id}" value="${opt}" required>
+                                <span>${opt}</span>
+                            `;
+                            optionsListDiv.appendChild(label);
+                        });
+                    }
+                    card.appendChild(optionsListDiv);
+                } else {
+                    // توليد حقل كتابة نصي عادي
+                    const input = document.createElement('textarea');
+                    input.className = 'form-control';
+                    input.rows = 3;
+                    input.name = `question_${q.id}`;
+                    input.placeholder = "اكتبي إجابتكِ المستفيضة هنا...";
+                    input.required = true;
+                    card.appendChild(input);
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        // معالجة ورفع الاستبيان وحفظ النتائج
+        function submitSurvey(e) {
+            e.preventDefault();
+            const questions = JSON.parse(localStorage.getItem('questions')) || [];
+            const allAnswers = JSON.parse(localStorage.getItem('answers')) || {};
+            
+            const currentAnswers = {};
+            
+            questions.forEach(q => {
+                if(q.type === 'mcq') {
+                    const selected = document.querySelector(`input[name="question_${q.id}"]:checked`);
+                    currentAnswers[q.id] = selected ? selected.value : '';
+                } else {
+                    const typed = document.querySelector(`textarea[name="question_${q.id}"]`);
+                    currentAnswers[q.id] = typed ? typed.value.trim() : '';
+                }
+            });
+
+            // حفظ إجابات الموظفة الحالية وربطها بـ الـ ID الخاص بها
+            allAnswers[currentEmpId] = currentAnswers;
+            localStorage.setItem('answers', JSON.stringify(allAnswers));
+
+            // إخفاء نموذج الأسئلة وعرض صفحة النجاح والشكر المحدّثة مباشرة
+            document.getElementById('survey-form-wrapper').style.display = 'none';
+            document.getElementById('success-screen').style.display = 'block';
+        }
+
+        // تشغيل البناء المبدئي عند اكتمال تحميل عناصر الصفحة
+        window.onload = function() {
+            initSurveyPage();
+        };
+    </script>
+</body>
+</html>
