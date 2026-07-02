@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم — استبيان آراء الموظفين</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body dir="rtl">
+
+<header>
+  <div class="header-brand">
+    <img src="logo.svg" alt="شعار الاستبيان">
+    <h1>لوحة التحكم</h1>
+  </div>
+  <button class="icon-btn" id="openSettings">⚙️ الإعدادات</button>
+</header>
+
+<main>
+  <div class="glass-card">
+    <h2>إضافة موظفة</h2>
+    <div class="form-grid">
+      <input id="newName" placeholder="اسم الموظفة">
+      <select id="newBranch">
+        <option value="" disabled selected>اختاري الفرع</option>
+      </select>
+      <input id="newTitle" placeholder="المسمى الوظيفي">
+      <button class="btn" id="addEmpBtn">إضافة</button>
+    </div>
+  </div>
+
+  <div class="glass-card">
+    <h2>الموظفات حسب الفرع</h2>
+    <div id="branchesWrap"><div class="empty-hint">لا يوجد موظفات بعد.</div></div>
+  </div>
+</main>
+
+<div class="overlay" id="empOverlay">
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <div class="panel-title" id="pName">—</div>
+        <div class="panel-sub" id="pMeta">—</div>
+      </div>
+      <button class="close-x" id="closePanel">✕</button>
+    </div>
+
+    <div class="link-box">
+      <input id="linkInput" readonly>
+      <button class="btn small ghost" id="copyLinkBtn">نسخ الرابط</button>
+    </div>
+    <div id="copiedMsg" class="link-copied" style="display:none;margin-top:-12px;margin-bottom:14px;">تم نسخ الرابط ✓</div>
+
+    <div id="answersWrap"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="settingsOverlay">
+  <div class="modal">
+    <h2>الإعدادات</h2>
+
+    <div class="settings-tabs">
+      <button class="settings-tab-btn active" data-tab="tags">الأوسمة</button>
+      <button class="settings-tab-btn" data-tab="questions">الأسئلة</button>
+      <button class="settings-tab-btn" data-tab="branches">الفروع</button>
+    </div>
+
+    <!-- تبويب: الأوسمة -->
+    <div class="settings-pane active" id="pane-tags">
+      <div id="tagList"></div>
+      <div style="margin-top:14px;">
+        <input id="newTagName" placeholder="اسم الوسم الجديد" style="margin-bottom:10px;">
+        <div class="swatch-picker" id="swatchPicker"></div>
+        <button class="btn" id="addTagBtn" style="width:100%;">إضافة وسم</button>
+      </div>
+    </div>
+
+    <!-- تبويب: الأسئلة -->
+    <div class="settings-pane" id="pane-questions">
+      <div id="questionList"></div>
+      <div class="add-row">
+        <input id="newQuestionText" placeholder="نص السؤال الجديد">
+        <button class="btn small" id="addQuestionBtn">إضافة</button>
+      </div>
+    </div>
+
+    <!-- تبويب: الفروع -->
+    <div class="settings-pane" id="pane-branches">
+      <div id="branchList"></div>
+      <div class="add-row">
+        <input id="newBranchName" placeholder="اسم الفرع الجديد">
+        <button class="btn small" id="addBranchBtn">إضافة</button>
+      </div>
+    </div>
+
+    <div style="text-align:left;margin-top:16px;">
+      <button class="btn ghost small" id="closeSettings">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="control.js"></script>
+</body>
+</html>
